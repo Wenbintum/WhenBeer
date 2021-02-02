@@ -1,0 +1,42 @@
+#!/usr/bin/env python
+from ase.io import read,write
+import sys,os
+from PIL import Image, ImageFont, ImageDraw
+#root
+from io_file.Picture import get_top, add_text
+from io_file.File_oprate import read_data
+pathway=os.getcwd()
+folnames = os.listdir(pathway)
+folnames.sort()
+E_O2=-922.109711
+E_H2_dimer=-11884.442129
+#E_G = -11853.440227
+#E_H2 = -28.204834
+for folname in folnames:
+    os.chdir('{}/{}'.format(pathway,folname))
+# get energy 
+    if os.path.exists('relax.log'):
+       line=read_data('relax.log')[-2]
+    else:
+	line=0.0
+    E_energy = float(line[:-2])-E_O2-E_H2_dimer
+    # generate picture
+    try:
+	get_top(folname,filename='opt.traj')
+    
+    except:
+	pass
+# add text to TOP view picture
+    picname="{}T.png".format(folname)
+    content="DeltaE = {} eV".format(round(E_energy,3))
+    add_text(picname,content,x_position=0,y_position=0.9)
+
+# union picture modified top and side vieew
+    os.system('montage *.png -geometry +0+0 -pointsize 12 -title {folname} -tile 1x2 {folname}.png'.format(**locals()))
+
+# remove rebundent picture and move left to data folder
+    os.system('rm *T.png *S.png')
+    os.system('mv *.png /p/project/lmcat/wenxu/data/picture')
+    os.chdir(pathway)
+
+    

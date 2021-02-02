@@ -1,0 +1,17 @@
+#!/bin/bash -x
+#SBATCH --job-name=2H_2O
+#SBATCH --account=tmosdes
+#SBATCH --nodes=1
+#SBATCH --ntasks=48
+#SBATCH --ntasks-per-node=48
+#SBATCH --output=mpi-out.%j
+#SBATCH --error=mpi-err.%j
+#SBATCH --time=24:00:00
+#SBATCH --partition=batch
+#SBATCH --mail-user=wenbin.xu@tum.de
+#SBATCH --mail-type=END
+
+#srun /p/home/jusers/xu8/juwels/wenxu/codes/q-e-6.1/bin/pw.x <pw.inp>  out
+#python opt_str.py 111 111bri Ag OH 111bricusRu
+python re_opt.py
+
